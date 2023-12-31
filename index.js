@@ -1,4 +1,4 @@
-import {transform,} from 'lightningcss';
+import {bundle,} from 'lightningcss';
 import {createHash,} from 'crypto';
 import fs from 'fs/promises';
 import {dirname, join,} from 'path';
@@ -45,13 +45,10 @@ export const cssModules = (options = {}) => {
                     return;
                 }
 
-                const rawCssBuffer = await fs.readFile(path)
-
                 const cssModules = { pattern: options.cssModulesPattern ?? `[hash]_[local]`, ...options.cssModules }
 
-                const { code, map, exports } = transform({
+                const { code, map, exports } = bundle({
                     filename: path,
-                    code: rawCssBuffer,
                     analyzeDependencies: false,
                     cssModules,
                     sourceMap: true,
@@ -62,7 +59,6 @@ export const cssModules = (options = {}) => {
                     // this way the correct relative path for the source map will be generated ;)
                     projectRoot: join(initialOptions.absWorkingDir || process.cwd(), initialOptions.outdir)
                 });
-
                 if (!exports) {
                     return;
                 }
@@ -101,7 +97,6 @@ export const cssModules = (options = {}) => {
                 contents += `export default {`;
 
                 for (const [cssClassReadableName, cssClassExport] of Object.entries(exports)) {
-
                     let compiledCssClasses = `'${escape(cssClassExport.name)}`
 
                     if (cssClassExport.composes) {
