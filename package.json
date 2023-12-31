@@ -1,20 +1,23 @@
 {
-	"name": "esbuild-plugin-lightningcss-modules",
-	"license": "MIT",
-	"author": {
-		"name": "Marc Henry Schultz"
-	},
-	"main": "index.js",
-	"files": [
-		"index.js"
-	],
-	"dependencies": {
-		"lightningcss": "^1.18.0"
-	},
-	"devDependencies": {
-		"esbuild": "~0.17.0"
-	},
-	"peerDependencies": {
-		"esbuild": "~0.16.0 || ~0.17.0"
-	}
+  "name": "esbuild-plugin-lightningcss-modules",
+  "license": "MIT",
+  "author": {
+    "name": "Marc Henry Schultz, Arve Knudsen"
+  },
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "lightningcss": "^1.22.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.11"
+  },
+  "peerDependencies": {
+    "esbuild": "^0.19.0"
+  },
+  "volta": {
+    "node": "20.10.0"
+  }
 }
