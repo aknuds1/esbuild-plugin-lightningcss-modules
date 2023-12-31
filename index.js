@@ -47,7 +47,9 @@ export const cssModules = (options = {}) => {
 
           const cssModules = { pattern: options.cssModulesPattern ?? `[hash]_[local]`, ...options.cssModules }
 
-          const { code, map, exports } = bundle({
+          let code, map, exports
+          try {
+            const rslt = bundle({
               filename: path,
               analyzeDependencies: false,
               cssModules,
@@ -58,9 +60,16 @@ export const cssModules = (options = {}) => {
               customAtRules: options.customAtRules,
               // this way the correct relative path for the source map will be generated ;)
               projectRoot: join(initialOptions.absWorkingDir || process.cwd(), initialOptions.outdir)
-          });
+            });
+            code = rslt.code
+            map = rslt.map
+            exports = rslt.exports
+          } catch (err) {
+            console.log('lightning css bundling failed:', err);
+            throw err
+          }
           if (!exports) {
-              return;
+            return;
           }
 
           const id = 'css-modules:\/\/' + createHash('sha256').update(path).digest('base64url') + '.css'
