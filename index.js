@@ -1,7 +1,7 @@
-const { transform } = require('lightningcss');
-const { createHash } = require('crypto');
-const fs = require("fs/promises");
-const { dirname, join } = require("path");
+import {transform,} from 'lightningcss';
+import {createHash,} from 'crypto';
+import fs from 'fs/promises';
+import {dirname, join,} from 'path';
 
 /**
  * A generic cssModules plugin for esbuild based on lightningcss
@@ -17,24 +17,24 @@ const { dirname, join } = require("path");
  * @param {import("lightningcss").CSSModulesConfig=} options.cssModules
  * @return {import("esbuild").Plugin}
  */
-const cssModules = (options = {}) => {
+export const cssModules = (options = {}) => {
     return {
-        name: "css-modules",
+        name: 'css-modules',
         setup: ({onLoad, onResolve, initialOptions}) => {
             const transpiledCssModulesMap = new Map()
 
             onResolve({filter: /^css-modules:\/\//}, ({path}) => {
                 return {
-                    namespace: "css-modules",
+                    namespace: 'css-modules',
                     path,
                 }
             })
 
-            onLoad({filter: /.*/, namespace: "css-modules"}, ({path}) => {
+            onLoad({filter: /.*/, namespace: 'css-modules'}, ({path}) => {
                 const {code, resolveDir} = transpiledCssModulesMap.get(path)
                 return {
                     contents: code,
-                    loader: initialOptions.loader?.[".css"] ?? "css",
+                    loader: initialOptions.loader?.['.css'] ?? 'css',
                     resolveDir,
 
                 }
@@ -67,9 +67,9 @@ const cssModules = (options = {}) => {
                     return;
                 }
 
-                const id = "css-modules:\/\/" + createHash("sha256").update(path).digest('base64url') + '.css'
+                const id = 'css-modules:\/\/' + createHash('sha256').update(path).digest('base64url') + '.css'
 
-                const finalCode = code.toString("utf8") + `/*# sourceMappingURL=data:application/json;base64,${map.toString("base64")} */`;
+                const finalCode = code.toString('utf8') + `/*# sourceMappingURL=data:application/json;base64,${map.toString('base64')} */`;
 
                 transpiledCssModulesMap.set(
                     id,
@@ -80,7 +80,7 @@ const cssModules = (options = {}) => {
 
                 const escape = (string) => JSON.stringify(string).slice(1, -1)
 
-                let contents = "";
+                let contents = '';
 
                 /** @type {Map<string, string>} */
                 const dependencies = new Map()
@@ -102,44 +102,42 @@ const cssModules = (options = {}) => {
 
                 for (const [cssClassReadableName, cssClassExport] of Object.entries(exports)) {
 
-                    let compiledCssClasses = `"${escape(cssClassExport.name)}`
+                    let compiledCssClasses = `'${escape(cssClassExport.name)}`
 
                     if (cssClassExport.composes) {
                         for (const composition of cssClassExport.composes) {
                             switch (composition.type) {
-                                case "local":
-                                    compiledCssClasses += " " + escape(composition.name)
+                                case 'local':
+                                    compiledCssClasses += ' ' + escape(composition.name)
                                     break;
                             
-                                case "global":
-                                    compiledCssClasses += " " + escape(composition.name)
+                                case 'global':
+                                    compiledCssClasses += ' ' + escape(composition.name)
                                     break;
 
-                                case "dependency":
-                                    compiledCssClasses += ` " + ${importDependency(composition.specifier)}[${quote(composition.name)}] + "`
+                                case 'dependency':
+                                    compiledCssClasses += ` ' + ${importDependency(composition.specifier)}[${quote(composition.name)}] + '`
                                     break;
                             }
                         }
                     }
 
-                    compiledCssClasses += `"`
+                    compiledCssClasses += `'`
 
                     contents += `${quote(cssClassReadableName)}:${compiledCssClasses},`
                 }
 
-                contents += "}"
+                contents += '}'
 
                 // https://github.com/evanw/esbuild/issues/2943#issuecomment-1439755408
-                const emptyishSourceMap = "data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIiJdLCJtYXBwaW5ncyI6IkEifQ==";
+                const emptyishSourceMap = 'data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIiJdLCJtYXBwaW5ncyI6IkEifQ==';
                 contents += `\n//# sourceMappingURL=${emptyishSourceMap}`
 
                 return {
                     contents,
-                    loader: "js",
+                    loader: 'js',
                 }
             })
         }    
     }
-}
-
-module.exports = { cssModules }
+};

@@ -4,6 +4,7 @@
   "author": {
     "name": "Marc Henry Schultz, Arve Knudsen"
   },
+  "type": "module",
   "main": "index.js",
   "files": [
     "index.js"
