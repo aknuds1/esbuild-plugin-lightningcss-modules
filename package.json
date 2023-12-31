@@ -1,5 +1,6 @@
 {
   "name": "@arve.knudsen/esbuild-plugin-lightningcss-modules",
+  "version": "0.1.0",
   "license": "MIT",
   "author": {
     "name": "Marc Henry Schultz, Arve Knudsen"
